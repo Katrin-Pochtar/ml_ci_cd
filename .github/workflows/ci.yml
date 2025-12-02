@@ -10,6 +10,10 @@ jobs:
 build:
 runs-on: ubuntu-latest
 
+env:
+MODEL_VERSION: ${{ secrets.MODEL_VERSION }}
+API_KEY: ${{ secrets.API_KEY }}
+
 steps:
 - name: Checkout code
 uses: actions/checkout@v4
@@ -24,3 +28,15 @@ run: pip install -r requirements.txt
 
 - name: Run tests
 run: pytest -v
+
+- name: Train model
+run: python train.py
+
+- name: Upload model artifact
+uses: actions/upload-artifact@v4
+with:
+name: trained-model
+path: model.pkl
+
+- name: Log version
+run: echo "Training model version $MODEL_VERSION"
